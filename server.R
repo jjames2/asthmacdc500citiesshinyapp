@@ -1,8 +1,8 @@
 library(leaflet)
 
 
-tractdata <- readRDS("C:\\Work\\DataScience\\asthmacdc500citiesshinyapp\\cdc500censustractasthmadata.rds")
-citydata <- readRDS("C:\\Work\\DataScience\\asthmacdc500citiesshinyapp\\cdc500cityasthmadata.rds")
+tractdata <- readRDS("cdc500censustractasthmadata.rds")
+citydata <- readRDS("cdc500cityasthmadata.rds")
 
 function(input, output, session) {
   

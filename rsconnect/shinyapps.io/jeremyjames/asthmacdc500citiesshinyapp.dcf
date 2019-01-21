@@ -1,0 +1,13 @@
+name: asthmacdc500citiesshinyapp
+title: asthmacdc500citiesshinyapp
+username:
+account: jeremyjames
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 658023
+bundleId: 1827786
+url: https://jeremyjames.shinyapps.io/asthmacdc500citiesshinyapp/
+when: 1548106545.57438
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .gitattributes|500_Cities_Local_Data_for_Better_Health_2018_release.rds|datacode.R
