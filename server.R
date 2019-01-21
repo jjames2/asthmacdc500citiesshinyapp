@@ -24,7 +24,6 @@ function(input, output, session) {
     bounds <- input$map_bounds
     latRng <- range(bounds$north, bounds$south)
     lngRng <- range(bounds$east, bounds$west)
-    print(latRng[2]-latRng[1])
     
     subset(citydata,
            lat >= latRng[1] & lat <= latRng[2] &
