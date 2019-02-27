@@ -1,8 +1,8 @@
 library(leaflet)
 
 
-tractdata <- readRDS("cdc500censustractasthmadata.rds")
-citydata <- readRDS("cdc500cityasthmadata.rds")
+tractdata <- readRDS("C:\\Work\\DataScience\\asthmacdc500citiesshinyapp\\cdc500censustractasthmadata.rds")
+citydata <- readRDS("C:\\Work\\DataScience\\asthmacdc500citiesshinyapp\\cdc500cityasthmadata.rds")
 
 function(input, output, session) {
   
@@ -30,10 +30,29 @@ function(input, output, session) {
              long >= lngRng[1] & long <= lngRng[2])
   })
   
+  tractInBounds <- reactive({
+    if (is.null(input$map_bounds))
+      return(tractdata[FALSE,])
+    bounds <- input$map_bounds
+    latRng <- range(bounds$north, bounds$south)
+    lngRng <- range(bounds$east, bounds$west)
+    
+    subset(tractdata,
+           lat >= latRng[1] & lat <= latRng[2] &
+             long >= lngRng[1] & long <= lngRng[2])
+  })
+  
   output$scatterplot <- renderPlot({
     xBy <- input$colorBy
     yBy <- input$sizeBy
-    displaydata <- cityInBounds()
+    if(input$geographicLevel=="City")
+    {
+      displaydata <- cityInBounds()
+    }
+    else
+    {
+      displaydata <- tractInBounds()
+    }
     # If no zipcodes are in view, don't plot
     if (nrow(displaydata) == 0)
       return(NULL)
@@ -47,15 +66,23 @@ function(input, output, session) {
   observe({
     colorBy <- input$colorBy
     sizeBy <- input$sizeBy
+    level <- input$geographicLevel
+    if(level == "City"){
+      data <- citydata
+    }
+    else
+    {
+      data <- tractInBounds()
+    }
     
-    pal <- colorBin("viridis", citydata[[colorBy]], 7, pretty = FALSE)
-    radius <- citydata[[sizeBy]] * input$circlesize * 10
+    pal <- colorBin("viridis", data[[colorBy]], 7, pretty = FALSE)
+    radius <- data[[sizeBy]] * input$circlesize * 10
     
-    leafletProxy("map", data = citydata) %>%
+    leafletProxy("map", data = data) %>%
       clearShapes() %>%
       addCircles(~long, ~lat, radius=radius, layerId=~UniqueID,
-                 stroke=FALSE, fillOpacity=0.4, fillColor=pal(citydata[[colorBy]])) %>%
-      addLegend("bottomleft", pal=pal, values=citydata[[colorBy]], title=colorBy,
+                 stroke=FALSE, fillOpacity=0.4, fillColor=pal(data[[colorBy]])) %>%
+      addLegend("bottomleft", pal=pal, values=data[[colorBy]], title=colorBy,
                 layerId="colorLegend")
   })
 }
